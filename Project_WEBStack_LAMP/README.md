@@ -50,4 +50,93 @@ sudo systemctl status apache2
 
 ![image](https://user-images.githubusercontent.com/34083808/185430296-85baa252-88b4-49d9-8800-7c1b3aecc20d.png)
 
+Before we can reviev any traffic by our web server, we need to open TCP Port 80 which is the default port that web browsers use to access web pages on the internet. So, we need to update the security rule for inbound connection. Inbound connection mean the connection from outside to our virtual host. The current settup was allow port 22(ssh), 80 (http), 443 (https) can connect our virtual host from the internet. IP adress ```0.0.0.0\0``` mean that our VM can recive request from any Ip adress. 
+
+![image](https://user-images.githubusercontent.com/34083808/185522567-fa25c23e-0183-4c05-a225-b7bd48e70cc6.png)
+
+
+To check how we can access it locally in our Ubuntu shell.
+
+```
+# access by DNS name
+curl http://localhost:80
+
+# access by Ip adress
+curl http://127.0.0.1:80
+```
+To check our Apache HTTP server can respond to requests from the internet, open a web browser and input follow url ```http://<public-ip-address>:80```
+
+![image](https://user-images.githubusercontent.com/34083808/185533930-fb15643f-d218-43ad-9383-b985d787612c.png)
+
+another way to retrive your Public IP Adress, other than check it in AWS web console is to use following command. 
+
+```
+curl -s http://169.254.169.254/latest/meta-data/public-ipv4
+```
+
+## step 3: Installing MYSQL.
+
+Now that you have a web server up and runnung. You need to install a Database Managerment System (DBMS) to be able to store and manage data for your site in a Relational database. MySQL is a popular relational database management system used within PHP environments.
+
+to install mysql we use apt package manager.
+```
+sudo apt install mysql-server
+```
+It's recommended that you run a security script that comes pre-installed with MySQL. This script will remove some insecure default settings and lock down access to your database system.
+
+```
+sudo mysql_secure_installation
+```
+> Note: Enabling this feature is something of a justment call. Id enabled, passwords which don't match the specified criterial will be rejected by MySQL with an error. IT's safe to leave validation disble. But you shoud always use strong, unique passwords for database credentials. 
+
+
+```
+Securing the MySQL server deployment.
+
+Connecting to MySQL using a blank password.
+
+VALIDATE PASSWORD COMPONENT can be used to test passwords
+and improve security. It checks the strength of password
+and allows the users to set only those passwords which are
+secure enough. Would you like to setup VALIDATE PASSWORD component?
+
+Press y|Y for Yes, any other key for No:
+```
+
+If you have problem error message when input new password to root ``` .. Failed! Error: SET PASSWORD has no significance for user 'root'@'localhost'```
+please solve it by follwing steps. 
+1. Open the terminal application.
+2. Terminate the mysql_secure_installation from another terminal using the killall command: ```sudo killall -9 mysql_secure_installation```
+3. Start the mysql client: ```sudo mysql``` Run the following SQL query ```ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'mypassword;'; exit ```
+4. run ``` sudo mysql_secure_installation ``` again. 
+5. input your root password which set at step 3. 
+6. access mysql with ``` mysql -h localhost -u root -p ``` 
+
+![image](https://user-images.githubusercontent.com/34083808/185567131-98dcd95a-b4cd-4ead-a031-82449306bec4.png)
+
+> note: at defaut the authentication method for mysql user is unix_socket or auth_socket. It allow you access mysql without password by administrative (sudo) mode. 
+> to check current authentication method please type in follwing command in mysql terminal ```mysql> SELECT user,authentication_string,plugin,host FROM mysql.user; ```
+
+![image](https://user-images.githubusercontent.com/34083808/185568153-165dcb6f-0808-4cae-b613-a10c5060addd.png)
+
+## Step 4: Installing PHP. 
+You have Apache installed to serve your content and MySQL installed to store and manage your data. PHP is the component of our setup that will process code to display dynamic content to the end user.  In adition, to the ```php``` package, you'll need ```php-mysql```, a php module that allows PHP to communicate with MySQL-based databases. You'll also need ``` libapache2-mod-php``` to enable Apache to handel PHP files. Core PHP packages will automatically be install as dependency. 
+
+To install these 3 packages at onece. 
+
+```
+sudo apt install php libapache2-mod-php php-mysql
+```
+
+onnce the installing completed, your can check the version of php by ``` sudo php -v ```
+
+At this point, your LAMP stack is completely installed and fully operational. 
+
+To test your setup with a PHP script, it's best to setup a proper [Apache Virtual Host](https://httpd.apache.org/docs/2.4/vhosts/) to hold your website's files and folders. Virtual Host allows you to have multiple located on a single machine and users of the websites will not even notice it. 
+
+![image](https://user-images.githubusercontent.com/34083808/185581488-db18032e-d795-412d-a527-403a720caa21.png)
+
+## Step 5: Configure our first Virtual Host. 
+
+Apache on Ubuntu 20.04 has one server block enabled by default that is configured to serve documents from the /var/www/html directory. 
 
