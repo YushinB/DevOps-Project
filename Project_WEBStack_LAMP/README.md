@@ -138,5 +138,71 @@ To test your setup with a PHP script, it's best to setup a proper [Apache Virtua
 
 ## Step 5: Configure our first Virtual Host. 
 
-Apache on Ubuntu 20.04 has one server block enabled by default that is configured to serve documents from the /var/www/html directory. 
+Apache on Ubuntu 20.04 has one server block enabled by default that is configured to serve documents from the /var/www/html directory. We will leave this configuration as it is and create our own directory. 
 
+```
+# create our folder for web server
+sudo mkdir /var/www/prokjectlamp
+
+# change ownership of the directory with your current system user.
+sudo chown -R $USER:$USER /var/www/prokjectlamp
+
+# create and open new configuration file in Apache's site-avalable directory. 
+sudo vi /etc/apache2/sites-available/projectlamp.conf
+
+# file content
+<VirtualHost *:80>
+    ServerName projectlamp
+    ServerAlias www.projectlamp
+    ServerAdmin webmaster@localhost
+    DocumentRoot /var/www/projectlamp
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+```
+with this virtualhost configuration, we're telling Apache to serve projectlamp using /var/www/projectlamp as its web root directory. If you would like to test apache without a domain name, you can remove or comment out the options ServerName and ServerAlias by adding a # charactor in the begining of each option's lines.
+
+You can now use a2ensite command to enable the new virtual host.
+
+```
+sudo a2ensite projectlamp
+
+# to disable default website that come with apache.
+sudo a2dissite 000-default
+
+# To make sure your your configuration working file. 
+sudo apache2ctl configtest
+
+# reload Apache so these changes take effect:
+sudo systemctl reload apache2
+```
+
+Create an index.html file in var/www/projectlamp folder for your website. So that we can test that the virtual host works as expected. 
+
+```
+sudo echo 'Hello LAMP from hostname' $(curl -s http://169.254.169.254/latest/meta-data/public-hostname) 'with public IP' $(curl -s curl -s http://169.254.169.254/latest/meta-data/public-ipv4) > /var/www/projectlamp/index.html
+```
+the content of index.html file
+```
+Hello LAMP from hostname ec2-54-226-112-195.compute-1.amazonaws.com with public IP 54.226.112.195
+```
+your can access the webpage either by public-hostname(ec2-54-226-112-195.compute-1.amazonaws.com) nor IP adress(54.226.112.195). untill you setup an index.php file, we can leave it as it is. after that please change file name or remove it. 
+
+Step 6: Enable PHP on the website.
+
+With the default Directoryindex setting on apache, a file name index.html will alway take precedence over an index.php file. In case you want to change behavior. You'll need to edit the /etc/apache2/mods-enable/dir.conf file and change the order in which index.php file listed within Directoryindex. 
+
+```
+sudo vim /etc/apache2/mods-enable/dir.conf
+<IfModule mod_dir.c>
+    #Change This:
+    # DirectoryIndex index.html index.cgi index.pl index.php index.xhtml index.htm
+    # to this
+    DirectoryIndex index.php  index.html index.cgi index.pl index.xhtml index.htm
+</IfModule>
+```
+
+after that, you need to reload Apache so the changes take effects. 
+```
+sudo systemctl reload apache2
+```
