@@ -206,3 +206,20 @@ after that, you need to reload Apache so the changes take effects.
 ```
 sudo systemctl reload apache2
 ```
+create new index.php file to confirm that Apache is able to handle and process requests for PHP file.
+
+```
+sudo vim /var/www/projectlamp/index.php
+
+# file contents
+<?php
+phpinfor();
+```
+When you finished, save and close the file, refresh the page and you will see a page similar to this. If you can see this page then your PHP installation is working as expected. After checking the relevent information about your php server throught that page. It's best to remove thie file you created as it contains sensitive information about PHP environment and your Ubuntu server. 
+
+```
+sudo rm /var/www/projectlamp/index.php
+```
+
+![image](https://user-images.githubusercontent.com/34083808/185646786-6368456d-3279-4bf7-99c2-52c9df6e1292.png)
+
