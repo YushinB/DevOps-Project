@@ -223,3 +223,39 @@ sudo rm /var/www/projectlamp/index.php
 
 ![image](https://user-images.githubusercontent.com/34083808/185646786-6368456d-3279-4bf7-99c2-52c9df6e1292.png)
 
+# Domain name AWS EC2 instance.
+
+Create Hosted Zone and Record Sets
+
+![image](https://user-images.githubusercontent.com/34083808/185724362-c25345eb-2867-4a2e-85ca-a81101568927.png)
+
+You should see something like below on your screen, Name Space servers, usually there are 4 different entries.Make note of these as you need them in the last step.
+
+![image](https://user-images.githubusercontent.com/34083808/185724390-4dfd8039-d86d-4ff0-8c92-80ef40985330.png)
+
+Now Create a recordset and add values as shown in image below
+- Keep name field empty.
+- Select Type A.
+- Select Alias No.
+- Value – This should be your elastic IP.
+- Routeing Policy: Simple.
+
+![image](https://user-images.githubusercontent.com/34083808/185724475-3f264222-b0bc-469a-b313-84a7bdb0dd0e.png)
+
+Next, We need to bring subdomain too, so www.yourdomain.com should also work
+- In name field type www.
+- Select Type A
+- Select Alias To another record in this hosted zone.
+- Alias Target from dropdown select your site name
+- Routeing Policy: Simple
+
+![image](https://user-images.githubusercontent.com/34083808/185725371-844e1796-4547-4d11-b00f-9a8518f56878.png)
+
+Add the Amazon NameServers in Control panel of Domain Provider. In my case I choose NameCheap. 
+
+![image](https://user-images.githubusercontent.com/34083808/185725467-c4afda3d-4af6-4d49-86f7-12079f3f08dd.png)
+
+You can expect a propagation time up to 24 hours. This is because it takes time for the DNS to take effect across the internet. The actual time of propagation may vary in some locations based on your network setup.
+
+That all for project 1. 
+Thank you very much!!!!.
