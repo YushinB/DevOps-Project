@@ -213,7 +213,7 @@ sudo vim /var/www/projectlamp/index.php
 
 # file contents
 <?php
-phpinfor();
+phpinfo();
 ```
 When you finished, save and close the file, refresh the page and you will see a page similar to this. If you can see this page then your PHP installation is working as expected. After checking the relevent information about your php server throught that page. It's best to remove thie file you created as it contains sensitive information about PHP environment and your Ubuntu server. 
 
