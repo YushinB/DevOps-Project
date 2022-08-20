@@ -285,3 +285,106 @@ try {
 ![image](https://user-images.githubusercontent.com/34083808/185739811-3f1bea1b-dbdb-4bb1-8375-c7739ac63e68.png)
 
 That all for project 2. Thank you very much!!!!.
+
+## miscellaneous.
+Important Nginx File Locations
+By default, Nginx stores different configuration and log files in the following locations:
+
+- /var/www/html – Website content as seen by visitors.
+- /etc/nginx – Location of the main Nginx application files.
+- /etc/nginx/nginx.conf – The main Nginx configuration file.
+- /etc/nginx/sites-available – List of all websites configured through Nginx.
+- /etc/nginx/sites-enabled – List of websites actively being served by Nginx.
+- /var/log/nginx/access.log – Access logs tracking every request to your server.
+- /var/log/ngins/error.log – A log of any errors generated in Nginx.
+
+Configure a Server Block (Optional)
+In Nginx, a server block is a configuration that works as its own server. By default, Nginx has one server block preconfigured. It is located at /var/www/html. However, it can be configured with multiple server blocks for different sites.
+
+1. Create a Directory for the Test Domain
+In a terminal window, create a new directory by entering the following: ```sudo mkdir -p /var/www/test_domain.com/html```
+
+2. Configure Ownership and Permissions. 
+
+```
+sudo chown –R $USER:$USER /var/www/test_domain.com
+sudo chmod –R 755 /var/www/test_domain.com
+```
+
+3. Create an index.html File for the Server Block.
+
+Open index.html for editing in a text editor of your choice (we will use the Nano text editor):
+```
+sudo nano /var/www/test_domain.com/html/index.html
+```
+
+In the text editor, enter the following HTML code:
+
+```html
+<html>
+   <head>
+      <title>Welcome to test_domain.com!</title>
+   </head>
+   <body>
+      <h1>This message confirms that your Nginx server block is working. Great work!</h1>
+   </body>
+</html>
+```
+
+4. Create Nginx Server Block Configuration
+Open the configuration file for editing:
+sudo nano /etc/nginx/sites-available/test_domain.com
+
+```nginx
+server    {
+  listen 80;
+ 
+  root /var/www/test_domain.com/html;
+  index index.html index.htm index.nginx.debian.html;
+ 
+  server_name test_domain.com www.test_domain.com;
+  location /          {
+    try_files $uri $uri/ =404;
+  }
+}
+```
+
+5. Create Symbolic Link for Nginx to Read on Startup
+
+```
+sudo ln –s /etc/nginx/sites-available/test_domain.com /etc/nginx/sites-enabled
+```
+6. Restart the Nginx Service
+
+```
+sudo systemctl reload nginx
+
+sudo systemctl restart nginx
+```
+
+7. Test the Configuration
+```
+sudo nginx -t
+```
+
+8. Modify the Hosts File (Optional)
+If you’re using a test domain name that isn’t registered or public, the /etc/hosts file may need to be modified to display the test_domain.com page.
+
+Next, open /etc/hosts for editing:
+
+```
+sudo nano /etc/hosts
+```
+In an empty space just below the localhost information, add the following line:
+```
+127.0.1.1 test_domain.com www.test_domain.com
+```
+![image](https://user-images.githubusercontent.com/34083808/185740660-71e1d3a1-ffba-4a41-8f82-1d9424577705.png)
+
+9. Check test_domain.com in a Web Browser.
+
+![image](https://user-images.githubusercontent.com/34083808/185740680-ae755e45-6852-40f4-a534-2814b66a6284.png)
+
+
+
+
