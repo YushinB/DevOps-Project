@@ -281,3 +281,7 @@ try {
    die();
 }
 ```
+
+![image](https://user-images.githubusercontent.com/34083808/185739811-3f1bea1b-dbdb-4bb1-8375-c7739ac63e68.png)
+
+That all for project 2. Thank you very much!!!!.
