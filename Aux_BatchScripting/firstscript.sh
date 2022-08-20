@@ -1,20 +1,23 @@
-#! /bin/bash
+#!/bin/bash
 
-echo "Welcome to bash script"
-echo 
+### This script prints system info ###
 
-# Checking system uptime
-echo "##################################"
-echo "the uptime of the system is:"
+echo "Welcome to bash script."
+echo
+
+#checking systemt uptime
+echo "#####################################"
+echo "The uptime of the system is: "
 uptime
 echo
 
-# memory Unitization
-echo "##################################"
-echo "memory utilization"
+# Memory Utilization
+echo "#####################################"
+echo "Memory Utilization"
 free -m
 echo
-#Disk Utilization
-echo "##################################"
+
+# Disk Utilization
+echo "#####################################"
 echo "Disk Utilization"
 df -h
